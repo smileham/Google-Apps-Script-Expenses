@@ -275,11 +275,12 @@ function submitExpenses(e) {
     for (var i=1; i<numRows+1; i++) {
       theDate = e.parameter["date"+i].toDateString();
       var theDescription = e.parameter["desc"+i]=="Description"?"":e.parameter["desc"+i];
-      expenseTable += '<tr><td valign="top" style="'+(i%2!=0?'background-color:#f6f6f6;':'')+'">'+i+ '</td>'+
-        '<td valign="top" '+(i%2!=0?'style="background-color:#f6f6f6;"':'')+'>'+ theDescription + '</td>'+
-        '<td valign="top" style="'+(i%2!=0?'background-color:#f6f6f6;':'')+'">'+ theDate + '</td>'+
-        '<td valign="top" '+(i%2!=0?'style="background-color:#f6f6f6;"':'')+'>'+ e.parameter["type"+i] + '</td>'+
-        '<td valign="top" '+(i%2!=0?'style="background-color:#f6f6f6;"':'')+'>£' + Number(e.parameter["amount"+i]).toFixed(2) +'</td></tr>';
+      var zebra = (i%2!=0?'style="background-color:#f6f6f6;"':'');
+      expenseTable += '<tr><td valign="top" '+zebra+'">'+i+ '</td>'+
+        '<td valign="top" '+zebra+'>'+ theDescription + '</td>'+
+        '<td valign="top" '+zebra+'">'+ theDate + '</td>'+
+        '<td valign="top" '+zebra+'>'+ e.parameter["type"+i] + '</td>'+
+        '<td valign="top" '+zebra+'>£' + Number(e.parameter["amount"+i]).toFixed(2) +'</td></tr>';
       total += Number(e.parameter["amount"+i]);
       if (approval) {
         theSheet.appendRow([theEmail, today, e.parameter.staffNo, e.parameter.CostCentre, e.parameter.CostLine, theDate, theDescription, e.parameter["type"+i], Number(e.parameter["amount"+i]).toFixed(2), referenceNumber, e.parameter.lineManagerEmail]);
