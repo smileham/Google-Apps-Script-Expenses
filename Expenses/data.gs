@@ -59,3 +59,7 @@ function generateRef_() {
 function getFinanceEmail() {
   return ScriptProperties.getProperty("financeEmail");
 }
+
+function getSpreadsheetId() {
+  return ScriptProperties.getProperty("spreadsheet");
+}
