@@ -1,3 +1,15 @@
+/*
+* Need to define the following Project Properties;
+*
+*  approvalProcess = true/false (enable or disable the approval process functionality)
+*  spreadsheet = 1P5FjdHBqDgGOqbylJWOK-iM7KDFrYMx8G4rK9gCXWmE (ID for the spreadsheet to store expenses)
+*  referenceNumber = 0 (starting unique ID for expenses)
+*  emailDomain = @gmail.com (ensure that the "Line Manager" email address in within your domain)
+*  approvalURL = https://script.google.com/macros/s/AKfycbziDLCg_fJfXPxIwXixRKjU4-hs8Egwu4LnQh7A-_dDGZ_xTz0P/exec (URL of the Approval "webapp")
+*  receiptURL = https://sites.google.com/site/expensesscript/receipt (URL of the Receipts "webapp" embedded in a Google Site)
+*  financeEmail = steven.mileham@gmail.com (User to share receipt images with)
+*/
+
 function doGet() {
   var theSpreadsheet = SpreadsheetApp.openById(ScriptProperties.getProperty("spreadsheet"));
   var approval = UserProperties.getProperty("approvalProcess")=="true" || ScriptProperties.getProperty("approvalProcess")=="true";
