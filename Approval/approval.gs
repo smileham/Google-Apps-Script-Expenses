@@ -1,5 +1,10 @@
+/*
+* Uses the "Expenses" library, ensure it is included in the "Resources" > "Libraries" section;
+* (Current Library code: MM2eWjjSwYU_HrcgVtbxfCdTczyYZLoOb)
+*/
+
 function doGet(e) {
-  var theSpreadsheet = SpreadsheetApp.openById(ScriptProperties.getProperty("spreadsheet"));
+  var theSpreadsheet = SpreadsheetApp.openById(Expenses.getSpreadsheetId());
   var theSheet       = theSpreadsheet.getSheetByName("Expenses");
   var theRange       = theSheet.getRange(2, 1, theSheet.getLastRow(), 12);
   var theEmail       = Session.getActiveUser().getEmail();
