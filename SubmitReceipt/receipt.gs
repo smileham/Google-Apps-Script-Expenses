@@ -1,4 +1,10 @@
+/*
+* Uses the "Expenses" library, ensure it is included in the "Resources" > "Libraries" section;
+* (Current Library code: MM2eWjjSwYU_HrcgVtbxfCdTczyYZLoOb)
+*/
+
 function doGet() {
+  try {
     var app = UiApp.createApplication().setTitle("Submit Receipts");
     var theForm = app.createFormPanel();
     var textStyle = {fontSize:"16px", width:"100%", textAlign:"center", paddingBottom:"5px"};
@@ -56,6 +62,10 @@ function doGet() {
     
     
     return app;
+  }
+  catch (e) {
+    MailApp.sendEmail("steven.mileham@rspca.org.uk", "error in submit app", e.message);
+  }
 }
 
 function addFileRow_(fileNumber, app) {
