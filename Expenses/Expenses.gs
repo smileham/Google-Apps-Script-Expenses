@@ -4,7 +4,6 @@
 *  spreadsheet = 1P5FjdHBqDgGOqbylJWOK-iM7KDFrYMx8G4rK9gCXWmE (ID for the spreadsheet to store expenses)
 *  referenceNumber = 0 (starting unique ID for expenses)
 *  emailDomain = @gmail.com (ensure that the "Line Manager" email address in within your domain)
-*  approvalURL = https://script.google.com/macros/s/AKfycbziDLCg_fJfXPxIwXixRKjU4-hs8Egwu4LnQh7A-_dDGZ_xTz0P/exec (URL of the Approval "webapp")
 *  financeEmail = steven.mileham@gmail.com (User to share receipt images with)
 */
 function doGet(e) {
@@ -31,12 +30,16 @@ function include(filename) {
 function getData() {
     var theSpreadsheet = SpreadsheetApp.openById(ScriptProperties.getProperty("spreadsheet"));
 
-    var staffDetails = { staffEmail: Session.getActiveUser().getEmail(), staffNumber: "", staffCostCentre: "", staffCostLine: "", staffLineManagerEmail: PropertiesService.getScriptProperties().getProperty("emailDomain") };
+    var staffDetails = { staffEmail: Session.getActiveUser().getEmail(),
+                        staffNumber: "",
+                        staffCostCentre: "",
+                        staffCostLine: "",
+                        staffLineManagerEmail: PropertiesService.getScriptProperties().getProperty("emailDomain") };
 
     staffDetails = lookupStaffDetails(staffDetails);
     staffDetails["costCentreListBox"] = buildSpreadsheetListBox_("CostCentre", staffDetails.staffCostCentre, theSpreadsheet);
     staffDetails["costLineListBox"] = buildSpreadsheetListBox_("CostLine", staffDetails.staffCostLine, theSpreadsheet);
-
+    staffDetails["domain"] = PropertiesService.getScriptProperties().getProperty("emailDomain");
     staffDetails["codeString"] = buildCodeList_(theSpreadsheet);
 
 
@@ -118,8 +121,8 @@ function submitExpenses(expenses) {
 
 
     var approvalTable = '<table width="100%"><tr><td width="50%">' +
-        '<div style="height:30px; text-align:center; width:100%; padding: 10px 0; border-radius: 5px; background-color:#94ffa6; font-weight:bold; font-size:18px"><a style="font-face:sans-serif; color:black;" href="' + PropertiesService.getScriptProperties().getProperty("approvalURL") + '?outcome=approve&startRow=' + lastRow + '&referenceNumber=' + referenceNumber + '">Approve</a></div></td>' +
-        '<td><div style="height:30px; text-align:center; width:100%; padding: 10px 0; border-radius: 5px; background-color:#ff9494; font-weight:bold; font-size:18px"><a style="font-face:sans-serif; color:black;" href="' + PropertiesService.getScriptProperties().getProperty("approvalURL") + '?outcome=reject&startRow=' + lastRow + '&referenceNumber=' + referenceNumber + '">Reject</a></div></td>' +
+        '<div style="height:30px; text-align:center; width:100%; padding: 10px 0; border-radius: 5px; background-color:#94ffa6; font-weight:bold; font-size:18px"><a style="font-face:sans-serif; color:black;" href="' + ScriptApp.getService().getUrl() + '?outcome=approve&startRow=' + lastRow + '&referenceNumber=' + referenceNumber + '">Approve</a></div></td>' +
+        '<td><div style="height:30px; text-align:center; width:100%; padding: 10px 0; border-radius: 5px; background-color:#ff9494; font-weight:bold; font-size:18px"><a style="font-face:sans-serif; color:black;" href="' + ScriptApp.getService().getUrl() + '?outcome=reject&startRow=' + lastRow + '&referenceNumber=' + referenceNumber + '">Reject</a></div></td>' +
         '</tr></table>';
 
     /* Line Manager Email */
