@@ -1,0 +1,301 @@
+<script>
+    function block() {
+        document.getElementById("busy").className = "block";
+    }
+
+    function unBlock() {
+        document.getElementById("busy").className = "available";
+    }
+
+    function populateData() {
+        block();
+        google.script.run.withSuccessHandler(popData)
+            .withFailureHandler(showError)
+            .getData();
+    }
+
+    function popData(staffDetails) {
+        var theStaffNumber = document.getElementById("staffNumber");
+        var theCostCentre = document.getElementById("costCentre");
+        var theCostLine = document.getElementById("costLine");
+        var theLineManager = document.getElementById("lineManager");
+        var theEmailAddress = document.getElementById("emailAddress");
+
+        var theCodeList = document.getElementById("codeList");
+
+        theStaffNumber.value = staffDetails.staffNumber;
+        theLineManager.value = staffDetails.staffLineManagerEmail;
+        theCodeList.value = staffDetails.codeString;
+        theEmailAddress.value = staffDetails.staffEmail;
+
+        staffDetails.costCentreListBox.forEach(function (costCentre) {
+            var theOption = document.createElement("option");
+            theOption.text = costCentre;
+            if (costCentre == staffDetails.staffCostCentre) { theOption.selected = "selected" }
+            theCostCentre.add(theOption);
+        });
+
+        staffDetails.costLineListBox.forEach(function (costLine) {
+            var theOption = document.createElement("option");
+            theOption.text = costLine;
+            if (costLine == staffDetails.staffCostLine) { theOption.selected = "selected" }
+            theCostLine.add(theOption);
+        });
+
+        unBlock();
+
+    }
+
+    function validate() {
+        var isValid = true;
+        var theStaffNumber = document.getElementById("staffNumber");
+        var theCostCentre = document.getElementById("costCentre");
+        var theCostLine = document.getElementById("costLine");
+        var theLineManager = document.getElementById("lineManager");
+
+        var theEmailAddress = document.getElementById("emailAddress");
+
+        var costCentre = theCostCentre.options[theCostCentre.selectedIndex].value;
+        var costLine = theCostLine.options[theCostLine.selectedIndex].value;
+
+        if (costCentre == "Please select") {
+            isValid = false;
+            theCostCentre.className = "field error";
+        }
+        else {
+            theCostCentre.className = "field";
+        }
+
+        if (costLine == "Please select") {
+            isValid = false;
+            theCostLine.className = "field error";
+        }
+        else {
+            theCostLine.className = "field";
+        }
+
+        var emailPattern = /^[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+        //var emailPattern =/^[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
+        if (emailPattern.test(theLineManager.value) == false || theEmailAddress.value == theLineManager.value) {
+            isValid = false;
+            theLineManager.className = "field error";
+        }
+        else {
+            theLineManager.className = "field";
+        }
+        var numRows = document.getElementById("rowNumber").value;
+
+        for (var i = 1; i < numRows; i++) {
+            var theDesc = document.getElementById("desc" + i);
+            var theDate = document.getElementById("date" + i);
+            var theType = document.getElementById("type" + i);
+            var theTypeVal = theType.options[theType.selectedIndex].value;
+            var theAmount = document.getElementById("amount" + i);
+            //TRIM
+            if (theDesc.value == null || theDesc.value.trim() == "") {
+                theDesc.className = "field error";
+                isValid = false;
+            }
+            else {
+                theDesc.className = "field";
+            }
+            // Fix Date check
+            if (theDate.value == null || theDate.value.trim() == "" || theDate > new Date()) {
+                theDate.className = "field error";
+                isValid = false;
+            }
+            else {
+                theDate.className = "field";
+            }
+            if (theAmount.value == null || theAmount.value.trim() == "" | isNaN(Number(theAmount.value)) || theAmount.value <= 0) {
+                theAmount.className = "field error";
+                isValid = false;
+            }
+            else {
+                theAmount.value = Number(theAmount.value).toFixed(2);
+                theAmount.className = "field";
+            }
+            if (theTypeVal == "Select cost code") {
+                theType.className = "field error";
+                isValid = false;
+            }
+            else {
+                theType.className = "field";
+            }
+            document.getElementById("addRow").className = "";
+        }
+
+
+        return isValid;
+    }
+
+    function addRow() {
+        block();
+        if (validate()) {
+            var theBlock = document.getElementById("expensesBlock");
+            var rowNumber = document.getElementById("rowNumber");
+            var theNum = rowNumber.value;
+
+            var newRow = document.createElement("div");
+            newRow.id = "row" + theNum;
+            newRow.className = "row field";
+
+            var expenseLabel = document.createElement("div");
+            expenseLabel.className = "label";
+            expenseLabel.innerHTML = "Expense " + theNum;
+            newRow.appendChild(expenseLabel);
+
+            var descInput = document.createElement("input");
+            descInput.className = "field";
+            descInput.type = "text"
+            descInput.id = "desc" + theNum;
+            newRow.appendChild(descInput)
+
+            var dateLabel = document.createElement("div");
+            dateLabel.className = "label";
+            dateLabel.innerHTML = "Date";
+            newRow.appendChild(dateLabel);
+
+            var dateInput = document.createElement("input");
+            dateInput.className = "field";
+            dateInput.type = "date"
+            dateInput.id = "date" + theNum;
+            newRow.appendChild(dateInput)
+
+            var typeLabel = document.createElement("div");
+            typeLabel.className = "label";
+            typeLabel.innerHTML = "Type";
+            newRow.appendChild(typeLabel);
+
+            var typeSelect = document.createElement("select");
+            typeSelect.className = "field";
+            typeSelect.id = "type" + theNum;
+
+            var theCodeList = document.getElementById("codeList").value;
+            var theCodes = theCodeList.split("|");
+
+            for (var i = 0; i < theCodes.length; i++) {
+                var newOption = document.createElement("option");
+                newOption.text = theCodes[i];
+                typeSelect.appendChild(newOption);
+            }
+
+            newRow.appendChild(typeSelect)
+
+            var amountLabel = document.createElement("div");
+            amountLabel.className = "label";
+            amountLabel.innerHTML = "Amount (£)";
+            newRow.appendChild(amountLabel);
+
+            var amountInput = document.createElement("input");
+            amountInput.className = "field";
+            amountInput.type = "number"
+            amountInput.id = "amount" + theNum;
+            amountInput.value = "0.00";
+            newRow.appendChild(amountInput);
+
+            theBlock.appendChild(newRow);
+
+            theNum++;
+            rowNumber.value = theNum;
+        }
+        unBlock();
+    }
+
+    function deleteRow() {
+        block();
+        var rowNumber = document.getElementById("rowNumber");
+
+        if (rowNumber.value > 1) {
+
+            var oldNum = rowNumber.value - 1;
+
+            var oldRow = document.getElementById("row" + oldNum);
+            oldRow.parentNode.removeChild(oldRow);
+            rowNumber.value = oldNum;
+        }
+        unBlock();
+    }
+
+    function submitExpenses() {
+        block();
+        isValid = true;
+        var rowNumber = document.getElementById("rowNumber");
+        if (rowNumber.value <= 1) {
+            isValid = false;
+            document.getElementById("addRow").className = "error";
+        }
+
+        if (isValid && validate()) {
+
+            var numRows = document.getElementById("rowNumber").value;
+
+            var expenses = {};
+
+            expenses["staffNo"] = document.getElementById("staffNumber").value;
+            var costCentre = document.getElementById("costCentre");
+            expenses["CostCentre"] = costCentre.options[costCentre.selectedIndex].value;
+            var costLine = document.getElementById("costLine");
+            expenses["CostLine"] = costLine.options[costLine.selectedIndex].value;
+            expenses["lineManagerEmail"] = document.getElementById("lineManager").value;
+
+            for (var i = 1; i < numRows; i++) {
+                expenses["desc" + i] = document.getElementById("desc" + i).value;
+                expenses["date" + i] = document.getElementById("date" + i).value;
+                var theType = document.getElementById("type" + i);
+                expenses["type" + i] = theType.options[theType.selectedIndex].value;
+                expenses["amount" + i] = document.getElementById("amount" + i).value;
+            }
+
+            expenses["numRows"] = numRows - 1;
+
+            google.script.run.withSuccessHandler(success)
+                .withFailureHandler(showError)
+                .submitExpenses(expenses);
+        }
+        else {
+            unBlock();
+        }
+    }
+
+    function success(payload) {
+        document.getElementById("referenceNumber").innerHTML = payload.referenceNumber;
+        document.getElementById("receiptURL").href = payload.receiptURL;
+        document.getElementById("results").className = "shown";
+        document.getElementById("home").className = "hidden";
+
+        unBlock();
+    }
+
+    function backHome() {
+        document.getElementById("home").className = "shown";
+        document.getElementById("results").className = "hidden";
+    }
+
+
+    function bindButtons() {
+        document.getElementById("addRow").addEventListener("click", function () {
+            addRow();
+            return false;
+        });
+        document.getElementById("deleteRow").addEventListener("click", function () {
+            deleteRow();
+            return false;
+        });
+        document.getElementById("submitExpenses").addEventListener("click", function () {
+            submitExpenses();
+            return false;
+        });
+        document.getElementById("backButton").addEventListener("click", function () {
+            backHome();
+            return false;
+        });
+    }
+
+    function showError(e) {
+        alert(e);
+    }
+
+    populateData();
+    bindButtons();
+</script>
