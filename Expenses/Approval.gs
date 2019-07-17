@@ -62,6 +62,6 @@ function manageApproval_(e) {
         .setSandboxMode(HtmlService.SandboxMode.IFRAME);
   }
   catch (e) {
-    MailApp.sendEmail("steven.mileham@rspca.org.uk", "error in approval app", e.message);
+    MailApp.sendEmail("steven.mileham@gmail.com", "error in approval app", e.message);
   }
 }
