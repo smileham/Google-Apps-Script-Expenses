@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base target="_top">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <?!= include('Stylesheet'); ?>
+</head>
+
+<body>
+    <header>
+        <h1>Expenses</h1>
+    </header>
+    <div id="home">
+        <div class="label">Staff Number:</div>
+        <input type="text" id="staffNumber" class="field" />
+        <div class="label">Cost Centre:</div>
+        <select id="costCentre" class="field">
+            <option>Please select</option>
+        </select>
+        <div class="label">Cost Line:</div>
+        <select id="costLine" class="field">
+            <option>Please select</option>
+        </select>
+        <div class="label">Line Manager Email Address:</div>
+        <input type="text" id="lineManager" class="field" />
+        <input type="hidden" value="1" name="rowNumber" id="rowNumber" />
+        <input type="hidden" value="" name="codeList" id="codeList" />
+        <input type="hidden" value="" name="emailAddress" id="emailAddress" />
+        <div id="expensesBlock">
+        </div>
+        <div id="buttons">
+            <div id="column1">
+                <button id="addRow" class="">Add Row</button>
+            </div>
+            <div id="column2">
+                <button id="deleteRow" class="warning">Delete Row</button>
+            </div>
+            <div id="column3">
+                <button id="submitExpenses" class="primary">Submit</button>
+            </div>
+        </div>
+        <div class="spacer"></div>
+    </div>
+    <div id="results" class="hidden">
+        <h2>Expenses Submitted</h2>
+        <div>Your reference number is <span id="referenceNumber"></span></div>
+        <div>Please submit receipts in drive via the link below.</div>
+        <div><a href="#" id="receiptURL">Receipt URL</a></div>
+        <div id="buttons">
+            <button id="backButton" class="">Back to Expenses</button>
+        </div>
+    </div>
+
+    <div id="busy" class="available"></div>
+</body>
+<?!= include('HomeJS'); ?>
+
+</html>
