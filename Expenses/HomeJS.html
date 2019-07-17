@@ -20,6 +20,7 @@
         var theCostLine = document.getElementById("costLine");
         var theLineManager = document.getElementById("lineManager");
         var theEmailAddress = document.getElementById("emailAddress");
+        var theDomain = document.getElementById("domain");
 
         var theCodeList = document.getElementById("codeList");
 
@@ -27,6 +28,7 @@
         theLineManager.value = staffDetails.staffLineManagerEmail;
         theCodeList.value = staffDetails.codeString;
         theEmailAddress.value = staffDetails.staffEmail;
+        theDomain.value = staffDetails.domain;
 
         staffDetails.costCentreListBox.forEach(function (costCentre) {
             var theOption = document.createElement("option");
@@ -74,7 +76,8 @@
             theCostLine.className = "field";
         }
 
-        var emailPattern = /^[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+        //var emailPattern = /^[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+        var emailPattern = new RegExp("^[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+"+document.getElementById("domain").value+"$");
         //var emailPattern =/^[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
         if (emailPattern.test(theLineManager.value) == false || theEmailAddress.value == theLineManager.value) {
             isValid = false;
@@ -91,7 +94,7 @@
             var theType = document.getElementById("type" + i);
             var theTypeVal = theType.options[theType.selectedIndex].value;
             var theAmount = document.getElementById("amount" + i);
-            //TRIM
+            
             if (theDesc.value == null || theDesc.value.trim() == "") {
                 theDesc.className = "field error";
                 isValid = false;
@@ -100,7 +103,7 @@
                 theDesc.className = "field";
             }
             // Fix Date check
-            if (theDate.value == null || theDate.value.trim() == "" || theDate > new Date()) {
+            if (theDate.value == null || theDate.value.trim() == "" || new Date(theDate.value) > new Date()) {
                 theDate.className = "field error";
                 isValid = false;
             }
