@@ -93,7 +93,7 @@ function submitExpenses(expenses) {
 
     for (var i = 1; i < numRows + 1; i++) {
         var totalCode = "'00" + stripCode_(expenses.CostCentre) + stripCode_(expenses.CostLine) + stripCode_(expenses["type" + i]);
-        theDate = expenses["date" + i];
+        theDate = new Date(expenses["date" + i]).toDateString();
         var theDescription = expenses["desc" + i] == "Description" ? "" : expenses["desc" + i];
         var zebra = (i % 2 != 0 ? 'style="background-color:#f6f6f6;"' : '');
         expenseTable += '<tr><td valign="top" ' + zebra + '">' + i + '</td>' +
