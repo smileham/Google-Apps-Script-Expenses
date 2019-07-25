@@ -296,7 +296,13 @@
     }
 
     function showError(e) {
-        alert(e);
+        if (e.message.indexOf("Notify people")>0) { 
+          alert("Unknown Line Manager");
+          unBlock();
+        }
+        else {
+          alert(e);
+        }
     }
 
     populateData();
